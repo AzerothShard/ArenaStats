@@ -44,6 +44,17 @@
         <p class="text-center text-success">Next Arena Points distribution (server time): <strong>{{ NextArenaPointDistributionTime * 1000  | date:'yyyy-MM-dd HH:mm:ss' : 'UTC' }}</strong></p>
       </div>
 
+      <br>
+      <b class="season">
+        Season:
+        <select ng-model="season" ng-change="setSeason(season)" class="btn btn-default">
+          <option value="">current</option>
+          <option ng-repeat="count in [] | range:numSeasons" ng-value="$index+1">{{ $index+1 }}</option>
+        </select>
+      </b>
+      <br>
+      <br>
+
       <div ui-view></div>
 
       <hr>

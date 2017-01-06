@@ -1,7 +1,8 @@
 <div class="main-container">
-  <uib-tabset class="text-center">
 
-    <uib-tab heading="5v5" active="tabs.tab5">
+  <uib-tabset class="text-center" ng-init="activeTab = 2" active="activeTab">
+
+    <uib-tab heading="5v5">
       <div class="table-responsive">
         <table class="table table-striped table-bordered table-condensed" ts-wrapper>
           <thead>
@@ -30,7 +31,7 @@
       </div>
     </uib-tab>
 
-    <uib-tab heading="3v3" active="tabs.tab3">
+    <uib-tab heading="3v3">
       <div class="table-responsive">
         <table class="table table-striped table-bordered table-condensed" ts-wrapper>
           <thead>
@@ -59,7 +60,7 @@
       </div>
     </uib-tab>
 
-    <uib-tab heading="2v2" active="tabs.tab2">
+    <uib-tab heading="2v2">
       <div class="table-responsive">
         <table class="table table-striped table-bordered table-condensed" ts-wrapper>
           <thead>
@@ -88,5 +89,5 @@
       </div>
     </uib-tab>
 
-  </tabset>
+  </uib-tabset>
 </div>

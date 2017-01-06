@@ -5,6 +5,17 @@
   'use strict';
   var app = angular.module('arenastats', ['ui.router', 'ui.bootstrap', 'chieffancypants.loadingBar', 'tableSort']);
 
+  app.filter('range', function() {
+    return function(input, total) {
+      total = parseInt(total);
+
+      for (var i=0; i<total; i++)
+        input.push(i);
+
+      return input;
+    };
+  });
+
 
   app.config(function ($stateProvider, $urlRouterProvider) {
 
@@ -30,7 +41,7 @@
 
     $http.get( app.api + "search/worldstates?comment=NextArenaPointDistributionTime" )
       .success(function(data, status, header, config) {
-      if (data.length == 1) { 
+      if (data.length == 1) {
         $scope.NextArenaPointDistributionTime = data[0].value;
         console.log("[INFO] Loaded NextArenaPointDistributionTime");
       } else {
@@ -41,14 +52,36 @@
       console.log("Error in ArenaStats $http.get: " + app.api + "search/worldstates?comment=NextArenaPointDistributionTime");
       $scope.apiLoaded = false;
     });
+
+    $rootScope.season = "";
+    $scope.numSeasons = [];
+
+    $scope.setSeason = function(season) {
+      $rootScope.season = season;
+    };
+
+    /* get count of seasons */
+    $http.get( app.api + "get_tournament_seasons" )
+      .success(function(data, status, header, config) {
+      if (data.length == 1)
+        $scope.numSeasons = data[0].count;
+      else
+        console.log("[ERROR] Problems while retrieving number of the tournament seasons");
+    })
+      .error(function(data, status, header, config) {
+      console.log("Error in ArenaStats $http.get: " + app.api + "get_tournament_seasons");
+    });
+
   });
 
   app.controller("MainController", function($rootScope, $scope, $http, $state) {
-    $scope.tabs = {
-      tab2 : true,
-      tab3 : false,
-      tab5 : false
-    };
+
+    /* onchange $rootScope.season reload statistics */
+    $scope.$watch(function() {
+      return $rootScope.season;
+    }, function() {
+      $scope.loadSeason();
+    }, true);
 
     var processTeams = function (teams) {
       if (!teams) { return; }
@@ -81,40 +114,43 @@
       });
     };
 
-    
-    $http.get( app.api + "arena_team/type/2" )
-      .success(function(data, status, header, config) {
-      $scope.teams2 = data;
-      processTeams($scope.teams2);
-      console.log("[INFO] Loaded 2v2 teams");
-    })
-      .error(function(data, status, header, config) {
-      console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/2");
-      $scope.apiLoaded = false;
-    });
+    $scope.loadSeason = function() {
 
-    $http.get( app.api + "arena_team/type/3" )
-      .success(function(data, status, header, config) {
-      $scope.teams3 = data;
-      processTeams($scope.teams3);
-      console.log("[INFO] Loaded 3v3 teams");
-    })
-      .error(function(data, status, header, config) {
-      console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/3");
-      $scope.apiLoaded = false;
-    });
+      $http.get( app.api + "arena_team/type/2?season=" + $rootScope.season )
+        .success(function(data, status, header, config) {
+        $scope.teams2 = data;
+        processTeams($scope.teams2);
+        console.log("[INFO] Loaded 2v2 teams");
+      })
+        .error(function(data, status, header, config) {
+        console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/2");
+        $scope.apiLoaded = false;
+      });
+
+      $http.get( app.api + "arena_team/type/3?season=" + $rootScope.season )
+        .success(function(data, status, header, config) {
+        $scope.teams3 = data;
+        processTeams($scope.teams3);
+        console.log("[INFO] Loaded 3v3 teams");
+      })
+        .error(function(data, status, header, config) {
+        console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/3");
+        $scope.apiLoaded = false;
+      });
 
 
-    $http.get( app.api + "arena_team/type/5" )
-      .success(function(data, status, header, config) {
-      $scope.teams5 = data;
-      processTeams($scope.teams5);
-      console.log("[INFO] Loaded 5v5 teams");
-    })
-      .error(function(data, status, header, config) {
-      console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/3");
-      $scope.apiLoaded = false;
-    });
+      $http.get( app.api + "arena_team/type/5?season=" + $rootScope.season )
+        .success(function(data, status, header, config) {
+        $scope.teams5 = data;
+        processTeams($scope.teams5);
+        console.log("[INFO] Loaded 5v5 teams");
+      })
+        .error(function(data, status, header, config) {
+        console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/3");
+        $scope.apiLoaded = false;
+      });
+
+    };
 
     $scope.showTeam = function(id) {
       $state.go('team', {id: id});
