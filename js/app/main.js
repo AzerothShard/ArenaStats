@@ -146,7 +146,7 @@
         console.log("[INFO] Loaded 5v5 teams");
       })
         .error(function(data, status, header, config) {
-        console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/3");
+        console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/5");
         $scope.apiLoaded = false;
       });
 
