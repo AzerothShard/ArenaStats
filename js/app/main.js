@@ -116,6 +116,18 @@
 
     $scope.loadSeason = function() {
 
+      //[AZTH] 1v1
+      $http.get( app.api + "arena_team/type/1?season=" + $rootScope.season )
+        .success(function(data, status, header, config) {
+        $scope.teams1 = data;
+        processTeams($scope.teams1);
+        console.log("[INFO] Loaded 1v1 teams");
+      })
+        .error(function(data, status, header, config) {
+        console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/1");
+        $scope.apiLoaded = false;
+      });
+
       $http.get( app.api + "arena_team/type/2?season=" + $rootScope.season )
         .success(function(data, status, header, config) {
         $scope.teams2 = data;
@@ -135,6 +147,18 @@
       })
         .error(function(data, status, header, config) {
         console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/3");
+        $scope.apiLoaded = false;
+      });
+
+      //[AZTH] 3v3 SoloQ
+      $http.get( app.api + "arena_team/type/4?season=" + $rootScope.season )
+        .success(function(data, status, header, config) {
+        $scope.teams4 = data;
+        processTeams($scope.teams4);
+        console.log("[INFO] Loaded 3v3 SoloQ teams");
+      })
+        .error(function(data, status, header, config) {
+        console.log("Error in ArenaStats $http.get: " + app.api + "arena_team/type/4");
         $scope.apiLoaded = false;
       });
 
