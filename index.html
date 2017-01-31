@@ -49,7 +49,7 @@
         Season:
         <select ng-model="season" ng-change="setSeason(season)" class="btn btn-default">
           <option value="">current</option>
-          <option ng-repeat="count in [] | range:numSeasons" ng-value="$index+1">{{ $index+1 }}</option>
+          <option ng-repeat="count in [] | range:numSeasons" ng-value="{{numSeasons}}-$index">{{ numSeasons-$index }}</option>
         </select>
       </b>
       <br>
